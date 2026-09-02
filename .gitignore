@@ -1,0 +1,17 @@
+# Zig build artifacts
+.zig-cache/
+zig-out/
+zig-pkg/
+*.exe
+*.pdb
+
+# Frontend artifacts
+frontend/node_modules/
+frontend/dist/
+
+# Editor / OS files
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+Thumbs.db

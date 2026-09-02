@@ -1,0 +1,17 @@
+.{
+    .name = .mundo,
+    .version = "0.0.0",
+    .fingerprint = 0x65b4200f5eabb001, // Changing this has security and trust implications.
+    .minimum_zig_version = "0.16.0",
+    .dependencies = .{
+        .webview = .{
+            .url = "git+https://github.com/happystraw/zig-webview#3af877623ad1eb681ca3d4b4939e723f59cb2231",
+            .hash = "webview-0.0.0-mgPxHCxVKQCreEL4W99wtgkDlVNc902LTZ6fHtpDuk5P",
+        },
+    },
+    .paths = .{
+        "build.zig",
+        "build.zig.zon",
+        "src",
+    },
+}
