@@ -2,6 +2,7 @@ const std = @import("std");
 const builtin = @import("builtin");
 const Webview = @import("webview").Webview;
 const build_options = @import("build_options");
+const installer = @import("installer.zig");
 
 const windows = if (builtin.os.tag == .windows) std.os.windows else struct {};
 
@@ -436,6 +437,18 @@ pub fn main(init: std.process.Init) !void {
 
     const args = try init.minimal.args.toSlice(alloc);
     defer alloc.free(args);
+
+    if (builtin.os.tag == .windows) {
+        if (installer.isUninstallMode(args)) {
+            try installer.runUninstall(init.io, alloc);
+            return;
+        }
+        if (installer.isSetupMode(alloc, args)) {
+            const silent = installer.isSilent(args);
+            try installer.runSetup(init.io, alloc, silent);
+            return;
+        }
+    }
 
     var file_path: ?[]const u8 = null;
     if (args.len > 1) {

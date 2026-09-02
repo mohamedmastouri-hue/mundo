@@ -42,6 +42,8 @@ pub fn build(b: *std.Build) void {
     if (target.result.os.tag == .windows) {
         root_mod.linkSystemLibrary("comdlg32", .{});
         root_mod.linkSystemLibrary("shell32", .{});
+        root_mod.linkSystemLibrary("ole32", .{});
+        root_mod.linkSystemLibrary("advapi32", .{});
         root_mod.addWin32ResourceFile(.{
             .file = b.path("src/mundo.rc"),
         });
@@ -55,6 +57,15 @@ pub fn build(b: *std.Build) void {
         exe.subsystem = .windows;
     }
     b.installArtifact(exe);
+
+    const setup_exe = b.addExecutable(.{
+        .name = "mundo-setup",
+        .root_module = root_mod,
+    });
+    if (target.result.os.tag == .windows) {
+        setup_exe.subsystem = .windows;
+    }
+    b.installArtifact(setup_exe);
 
     // ── run step ──────────────────────────────────────────────────────────────
     const run_cmd = b.addRunArtifact(exe);
