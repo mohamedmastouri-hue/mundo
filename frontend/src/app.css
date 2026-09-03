@@ -1,27 +1,35 @@
 /* ── Mundo — Global Styles ──────────────────────────────────────────────────── */
 
 :root {
-  /* Colors — Dark Theme */
-  --bg-primary: #0d1117;
-  --bg-secondary: #161b22;
-  --bg-tertiary: #1c2128;
-  --bg-hover: #21262d;
-  --bg-active: #30363d;
-  --border-primary: #30363d;
-  --border-secondary: #21262d;
-  --text-primary: #e6edf3;
-  --text-secondary: #8b949e;
-  --text-muted: #484f58;
-  --accent: #58a6ff;
-  --accent-hover: #79c0ff;
-  --accent-subtle: rgba(88, 166, 255, 0.1);
+  /* Folio reading-room tokens — paper-first, one signal accent.
+     Dark = GitHub-ink mapped onto folio hues; light = bone paper. */
+  --paper: #ECE9E2;
+  --ink: #1B1A16;
+  --signal: #FF4D00;
+
+  /* Colors — Dark Theme (default) */
+  --bg-primary: #141310;
+  --bg-secondary: #1C1B16;
+  --bg-tertiary: #24231C;
+  --bg-hover: #2C2B23;
+  --bg-active: #3A392E;
+  --border-primary: #3A392E;
+  --border-secondary: #2C2B25;
+  --text-primary: #ECE9E2;
+  --text-secondary: #A09A89;
+  --text-muted: #6B675B;
+  --accent: #FF4D00;
+  --accent-hover: #FF6A26;
+  --accent-subtle: rgba(255, 77, 0, 0.1);
   --success: #3fb950;
   --warning: #d29922;
   --danger: #f85149;
 
-  /* Typography */
-  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+  /* Typography — Folio pairing */
+  --font-display: 'Fraunces', Georgia, serif;
+  --font-body: 'Newsreader', Georgia, serif;
+  --font-sans: 'Newsreader', Georgia, serif;
+  --font-mono: 'IBM Plex Mono', 'JetBrains Mono', monospace;
   --font-size-xs: 0.75rem;
   --font-size-sm: 0.8125rem;
   --font-size-base: 0.875rem;
@@ -56,21 +64,21 @@
   --transition-slow: 300ms ease;
 }
 
-/* Light Theme */
+/* Light Theme — bone paper */
 :root[data-theme="light"] {
-  --bg-primary: #ffffff;
-  --bg-secondary: #f6f8fa;
-  --bg-tertiary: #eaeef2;
-  --bg-hover: #eaeef2;
-  --bg-active: #d0d7de;
-  --border-primary: #d0d7de;
-  --border-secondary: #e6edf3;
-  --text-primary: #1f2328;
-  --text-secondary: #656d76;
-  --text-muted: #8b949e;
-  --accent: #0969da;
-  --accent-hover: #0550ae;
-  --accent-subtle: rgba(9, 105, 218, 0.08);
+  --bg-primary: #ECE9E2;
+  --bg-secondary: #F4F2EB;
+  --bg-tertiary: #E3DFD4;
+  --bg-hover: #E3DFD4;
+  --bg-active: #D3CFC1;
+  --border-primary: #C4BFAF;
+  --border-secondary: #D2CEC1;
+  --text-primary: #1B1A16;
+  --text-secondary: #57534A;
+  --text-muted: #9B9687;
+  --accent: #FF4D00;
+  --accent-hover: #D63F00;
+  --accent-subtle: rgba(255, 77, 0, 0.08);
   --success: #1a7f37;
   --warning: #9a6700;
   --danger: #cf222e;
