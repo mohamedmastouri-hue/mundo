@@ -119,12 +119,32 @@ function greet(name: string): string {
   let charCount = $derived(markdown.length);
   let lineCount = $derived(markdown.split('\n').length);
 
-  let renderedHtml = $derived.by(() => {
-    try {
-      return marked.parse(markdown) as string;
-    } catch {
-      return markdown;
+  // Speed: a full marked+highlight pass costs ~55ms on a 74KB doc, so the
+  // preview is rendered on a 120ms debounce and skipped entirely while in
+  // edit mode — typing never waits on the parser. First paint is sync so
+  // opening a file never flashes blank.
+  let renderedHtml = $state('');
+  let previewPrimed = false;
+  $effect(() => {
+    const src = markdown;
+    if (viewMode !== 'preview') return;
+    if (!previewPrimed) {
+      previewPrimed = true;
+      try {
+        renderedHtml = marked.parse(src) as string;
+      } catch {
+        renderedHtml = src;
+      }
+      return;
     }
+    const t = window.setTimeout(() => {
+      try {
+        renderedHtml = marked.parse(src) as string;
+      } catch {
+        renderedHtml = src;
+      }
+    }, 120);
+    return () => window.clearTimeout(t);
   });
 
   function flashStatus(msg: string) {
