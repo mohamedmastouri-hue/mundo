@@ -642,12 +642,13 @@ function greet(name: string): string {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    padding: 2px 10px;
+    padding: 3px 10px;
     background: var(--bg-tertiary);
     border: 1px solid var(--border-secondary);
-    border-radius: var(--radius-sm);
-    font-size: var(--font-size-xs);
+    border-radius: 100px;
+    font-size: 11px;
     font-family: var(--font-mono);
+    letter-spacing: 0.04em;
   }
 
   .file-name {
@@ -655,8 +656,8 @@ function greet(name: string): string {
   }
 
   .dirty-indicator {
-    color: var(--warning);
-    font-size: 0.65rem;
+    color: var(--accent);
+    font-size: 0.6rem;
     line-height: 1;
   }
 
@@ -698,9 +699,12 @@ function greet(name: string): string {
     border: none;
     background: transparent;
     color: var(--text-secondary);
-    font-size: var(--font-size-xs);
+    font-family: var(--font-mono);
+    font-size: 11px;
     font-weight: 500;
-    border-radius: var(--radius-sm);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    border-radius: 100px;
     cursor: pointer;
     transition: all var(--transition-fast);
   }
@@ -710,10 +714,9 @@ function greet(name: string): string {
   }
 
   .mode-btn.active {
-    background: var(--bg-hover);
-    color: var(--text-primary);
-    box-shadow: var(--shadow-sm);
-    font-weight: 600;
+    background: var(--text-primary);
+    color: var(--bg-primary);
+    font-weight: 500;
   }
 
   .titlebar-right {
@@ -1100,7 +1103,9 @@ function greet(name: string): string {
     padding: 0 var(--space-4);
     background: var(--bg-secondary);
     border-top: 1px solid var(--border-secondary);
-    font-size: var(--font-size-xs);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.04em;
     color: var(--text-muted);
     user-select: none;
     flex-shrink: 0;
