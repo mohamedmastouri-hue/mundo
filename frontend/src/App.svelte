@@ -115,9 +115,21 @@ function greet(name: string): string {
   let statusMessage = $state<string | null>(null);
   let statusTimer: number | null = null;
 
-  let wordCount = $derived(markdown.trim() === '' ? 0 : markdown.trim().split(/\s+/).length);
-  let charCount = $derived(markdown.length);
-  let lineCount = $derived(markdown.split('\n').length);
+  // Speed: counts split the whole doc, so they update on a 150ms throttle
+  // instead of on every keystroke — the statusbar can't make typing jank.
+  // Initial values are computed once, identically to before.
+  let wordCount = $state(initialContent.trim() === '' ? 0 : initialContent.trim().split(/\s+/).length);
+  let charCount = $state(initialContent.length);
+  let lineCount = $state(initialContent.split('\n').length);
+  $effect(() => {
+    const src = markdown;
+    const t = window.setTimeout(() => {
+      charCount = src.length;
+      wordCount = src.trim() === '' ? 0 : src.trim().split(/\s+/).length;
+      lineCount = src.split('\n').length;
+    }, 150);
+    return () => window.clearTimeout(t);
+  });
 
   let renderedHtml = $derived.by(() => {
     try {
