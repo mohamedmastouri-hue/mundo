@@ -951,12 +951,16 @@ function greet(name: string): string {
   }
 
   .markdown-body :global(blockquote) {
-    border-left: 3px solid var(--accent);
-    padding: var(--space-2) var(--space-4);
-    margin: var(--space-4) 0;
-    color: var(--text-secondary);
-    background: var(--accent-subtle);
-    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    border-left: 2px solid var(--accent);
+    padding: var(--space-2) var(--space-2) var(--space-2) var(--space-5);
+    margin: var(--space-6) 0;
+    color: var(--text-primary);
+    background: transparent;
+    font-family: var(--font-display, Georgia, serif);
+    font-style: italic;
+    font-size: 1.35rem;
+    line-height: 1.4;
+    letter-spacing: -0.01em;
   }
 
   .markdown-body :global(hr) {
@@ -982,25 +986,36 @@ function greet(name: string): string {
   .markdown-body :global(input[type="checkbox"]) {
     margin-right: var(--space-2);
     accent-color: var(--accent);
+    width: 15px;
+    height: 15px;
   }
 
   .markdown-body :global(table) {
     width: 100%;
     border-collapse: collapse;
     margin: var(--space-4) 0;
-    font-size: var(--font-size-sm);
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    border: 1px solid var(--border-secondary);
+    border-radius: var(--radius-md);
+    overflow: hidden;
   }
 
   .markdown-body :global(th),
   .markdown-body :global(td) {
     padding: var(--space-2) var(--space-4);
-    border: 1px solid var(--border-primary);
+    border-bottom: 1px solid var(--border-secondary);
     text-align: left;
   }
 
   .markdown-body :global(th) {
-    background: var(--bg-secondary);
-    font-weight: 600;
+    background: var(--bg-tertiary);
+    font-weight: 500;
+    font-size: 0.66rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    border-bottom: 1px solid var(--border-primary);
   }
 
   .markdown-body :global(tr:nth-child(even)) {
