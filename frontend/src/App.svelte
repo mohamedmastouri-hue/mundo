@@ -938,22 +938,24 @@ function greet(name: string): string {
     background: var(--bg-tertiary);
     border: 1px solid var(--border-secondary);
     border-radius: var(--radius-sm);
-    color: var(--accent);
+    color: var(--text-primary);
   }
 
   .markdown-body :global(pre) {
-    background: var(--bg-secondary);
-    border: 1px solid var(--border-secondary);
-    border-radius: var(--radius-md);
-    padding: var(--space-4);
+    background: #171611;
+    color: #ECE9E2;
+    border: 1px solid #2A2924;
+    border-radius: 14px;
+    padding: var(--space-4) var(--space-5);
     margin: var(--space-4) 0;
     overflow-x: auto;
   }
 
   .markdown-body :global(pre code) {
+    font-family: var(--font-mono);
     font-size: var(--font-size-sm);
-    line-height: 1.6;
-    color: var(--text-primary);
+    line-height: 1.7;
+    color: inherit;
     background: transparent;
     padding: 0;
   }
@@ -1034,70 +1036,38 @@ function greet(name: string): string {
     color: var(--accent);
   }
 
-  /* ── Syntax Highlighting Tokens (GitHub-inspired) ─────────────────────────── */
+  /* ── Code island tokens (always dark exhibit) ─────────────────────────────── */
 
-  :global(:root[data-theme="dark"]) .markdown-body :global(.hljs-keyword),
-  :global(:root[data-theme="dark"]) .markdown-body :global(.hljs-selector-tag) {
-    color: #ff7b72;
+  :global(:root) .markdown-body :global(.hljs-keyword),
+  :global(:root) .markdown-body :global(.hljs-selector-tag) {
+    color: #FF9B6B;
   }
 
-  :global(:root[data-theme="dark"]) .markdown-body :global(.hljs-string),
-  :global(:root[data-theme="dark"]) .markdown-body :global(.hljs-attr) {
-    color: #a5d6ff;
+  :global(:root) .markdown-body :global(.hljs-string),
+  :global(:root) .markdown-body :global(.hljs-attr) {
+    color: #D9E6A0;
   }
 
-  :global(:root[data-theme="dark"]) .markdown-body :global(.hljs-title),
-  :global(:root[data-theme="dark"]) .markdown-body :global(.hljs-section),
-  :global(:root[data-theme="dark"]) .markdown-body :global(.hljs-function) {
-    color: #d2a8ff;
+  :global(:root) .markdown-body :global(.hljs-title),
+  :global(:root) .markdown-body :global(.hljs-section),
+  :global(:root) .markdown-body :global(.hljs-function) {
+    color: #9BB8FF;
   }
 
-  :global(:root[data-theme="dark"]) .markdown-body :global(.hljs-comment),
-  :global(:root[data-theme="dark"]) .markdown-body :global(.hljs-quote) {
-    color: #8b949e;
+  :global(:root) .markdown-body :global(.hljs-comment),
+  :global(:root) .markdown-body :global(.hljs-quote) {
+    color: #7A7668;
     font-style: italic;
   }
 
-  :global(:root[data-theme="dark"]) .markdown-body :global(.hljs-number),
-  :global(:root[data-theme="dark"]) .markdown-body :global(.hljs-literal) {
-    color: #79c0ff;
+  :global(:root) .markdown-body :global(.hljs-number),
+  :global(:root) .markdown-body :global(.hljs-literal) {
+    color: #9BB8FF;
   }
 
-  :global(:root[data-theme="dark"]) .markdown-body :global(.hljs-built_in),
-  :global(:root[data-theme="dark"]) .markdown-body :global(.hljs-type) {
-    color: #ffa657;
-  }
-
-  :global(:root[data-theme="light"]) .markdown-body :global(.hljs-keyword),
-  :global(:root[data-theme="light"]) .markdown-body :global(.hljs-selector-tag) {
-    color: #cf222e;
-  }
-
-  :global(:root[data-theme="light"]) .markdown-body :global(.hljs-string),
-  :global(:root[data-theme="light"]) .markdown-body :global(.hljs-attr) {
-    color: #0a3069;
-  }
-
-  :global(:root[data-theme="light"]) .markdown-body :global(.hljs-title),
-  :global(:root[data-theme="light"]) .markdown-body :global(.hljs-section),
-  :global(:root[data-theme="light"]) .markdown-body :global(.hljs-function) {
-    color: #8250df;
-  }
-
-  :global(:root[data-theme="light"]) .markdown-body :global(.hljs-comment),
-  :global(:root[data-theme="light"]) .markdown-body :global(.hljs-quote) {
-    color: #6e7781;
-    font-style: italic;
-  }
-
-  :global(:root[data-theme="light"]) .markdown-body :global(.hljs-number),
-  :global(:root[data-theme="light"]) .markdown-body :global(.hljs-literal) {
-    color: #0550ae;
-  }
-
-  :global(:root[data-theme="light"]) .markdown-body :global(.hljs-built_in),
-  :global(:root[data-theme="light"]) .markdown-body :global(.hljs-type) {
-    color: #953800;
+  :global(:root) .markdown-body :global(.hljs-built_in),
+  :global(:root) .markdown-body :global(.hljs-type) {
+    color: #FFB86B;
   }
 
   /* ── Status Bar ───────────────────────────────────────────────────────────── */
