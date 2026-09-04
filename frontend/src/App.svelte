@@ -854,22 +854,26 @@ function greet(name: string): string {
   }
 
   .markdown-body {
-    max-width: 780px;
+    max-width: 720px;
     margin: 0 auto;
-    font-family: var(--font-sans);
+    font-family: var(--font-body, var(--font-sans));
+    font-size: 18px;
     color: var(--text-primary);
-    line-height: 1.7;
+    line-height: 1.72;
     word-break: break-word;
   }
 
   .markdown-body :global(h1) {
-    font-size: var(--font-size-3xl);
-    font-weight: 700;
+    font-family: var(--font-display, Georgia, serif);
+    font-size: clamp(2rem, 4vw, 2.9rem);
+    font-weight: 500;
+    line-height: 1.02;
+    letter-spacing: -0.03em;
+    text-wrap: balance;
     margin-top: var(--space-8);
     margin-bottom: var(--space-4);
     padding-bottom: var(--space-3);
     border-bottom: 1px solid var(--border-secondary);
-    letter-spacing: -0.02em;
   }
 
   .markdown-body :global(h1:first-child) {
@@ -877,13 +881,16 @@ function greet(name: string): string {
   }
 
   .markdown-body :global(h2) {
-    font-size: var(--font-size-2xl);
-    font-weight: 600;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
     margin-top: var(--space-8);
     margin-bottom: var(--space-3);
-    padding-bottom: var(--space-2);
-    border-bottom: 1px solid var(--border-secondary);
-    letter-spacing: -0.01em;
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--border-secondary);
   }
 
   .markdown-body :global(h3) {
@@ -902,6 +909,7 @@ function greet(name: string): string {
 
   .markdown-body :global(p) {
     margin-bottom: var(--space-4);
+    text-wrap: pretty;
   }
 
   .markdown-body :global(strong) {
@@ -1014,14 +1022,16 @@ function greet(name: string): string {
   }
 
   .markdown-body :global(a) {
-    color: var(--accent);
-    text-decoration: none;
-    border-bottom: 1px solid transparent;
-    transition: border-color var(--transition-fast);
+    color: var(--text-primary);
+    text-decoration: underline;
+    text-decoration-color: var(--accent);
+    text-decoration-thickness: 1.5px;
+    text-underline-offset: 3px;
+    transition: color var(--transition-fast);
   }
 
   .markdown-body :global(a:hover) {
-    border-bottom-color: var(--accent);
+    color: var(--accent);
   }
 
   /* ── Syntax Highlighting Tokens (GitHub-inspired) ─────────────────────────── */
