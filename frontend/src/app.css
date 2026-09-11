@@ -1,141 +1,92 @@
-/* ── Mundo — Global Styles ──────────────────────────────────────────────────── */
+/* Mundo — proofroom edition.
+   Direction: quiet paper and ink. One accent (proof red) reserved for meaning.
+   Serif reads, sans frames, mono sources. Flat surfaces, hairlines, no gradients. */
 
 :root {
-  /* Mundo reading-room tokens — paper-first, one signal accent.
-     Dark = warm ink; light = bone paper. App name stays Mundo. */
-  --paper: #ECE9E2;
-  --ink: #1B1A16;
-  --signal: #FF4D00;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-serif: 'Newsreader', Georgia, 'Times New Roman', serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
 
-  /* Colors — Dark Theme (default) */
-  --bg-primary: #141310;
-  --bg-secondary: #1C1B16;
-  --bg-tertiary: #24231C;
-  --bg-hover: #2C2B23;
-  --bg-active: #3A392E;
-  --border-primary: #3A392E;
-  --border-secondary: #2C2B25;
-  --text-primary: #ECE9E2;
-  --text-secondary: #A09A89;
-  --text-muted: #6B675B;
-  --accent: #FF4D00;
-  --accent-hover: #FF6A26;
-  --accent-subtle: rgba(255, 77, 0, 0.1);
-  --success: #3fb950;
-  --warning: #d29922;
-  --danger: #f85149;
+  /* Dark: ink room */
+  --paper: #161511;
+  --chrome: #1c1b18;
+  --wash: #242220;
+  --line: #2b2925;
+  --line-strong: #3b3831;
 
-  /* Typography — Mundo reading-room pairing */
-  --font-display: 'Fraunces', Georgia, serif;
-  --font-body: 'Newsreader', Georgia, serif;
-  --font-sans: 'Newsreader', Georgia, serif;
-  --font-mono: 'IBM Plex Mono', 'JetBrains Mono', monospace;
-  --font-size-xs: 0.75rem;
-  --font-size-sm: 0.8125rem;
-  --font-size-base: 0.875rem;
-  --font-size-lg: 1rem;
-  --font-size-xl: 1.25rem;
-  --font-size-2xl: 1.5rem;
-  --font-size-3xl: 2rem;
+  --ink: #ece7dc;
+  --ink-2: #a9a398;
+  --ink-3: #76716a;
 
-  /* Spacing */
-  --space-1: 0.25rem;
-  --space-2: 0.5rem;
-  --space-3: 0.75rem;
-  --space-4: 1rem;
-  --space-5: 1.25rem;
-  --space-6: 1.5rem;
-  --space-8: 2rem;
+  --accent: #d36545;
+  --accent-ink: #f0b49e;
+  --accent-wash: rgba(211, 101, 69, 0.12);
 
-  /* Radii */
-  --radius-sm: 4px;
-  --radius-md: 6px;
-  --radius-lg: 8px;
-  --radius-xl: 12px;
+  --ok: #7fb08a;
+  --warn: #d9a441;
+  --bad: #d36545;
 
-  /* Shadows */
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
-  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5);
+  --overlay: rgba(10, 9, 8, 0.6);
 
-  /* Transitions */
-  --transition-fast: 120ms ease;
-  --transition-base: 200ms ease;
-  --transition-slow: 300ms ease;
+  --t-fast: 120ms ease;
+  --t-base: 180ms ease;
 }
 
-/* Light Theme — bone paper */
 :root[data-theme="light"] {
-  --bg-primary: #ECE9E2;
-  --bg-secondary: #F4F2EB;
-  --bg-tertiary: #E3DFD4;
-  --bg-hover: #E3DFD4;
-  --bg-active: #D3CFC1;
-  --border-primary: #C4BFAF;
-  --border-secondary: #D2CEC1;
-  --text-primary: #1B1A16;
-  --text-secondary: #57534A;
-  --text-muted: #9B9687;
-  --accent: #FF4D00;
-  --accent-hover: #D63F00;
-  --accent-subtle: rgba(255, 77, 0, 0.08);
-  --success: #1a7f37;
-  --warning: #9a6700;
-  --danger: #cf222e;
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.06);
-  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
-  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
+  --paper: #fdfcf8;
+  --chrome: #f5f2ea;
+  --wash: #ece8dd;
+  --line: #e3ded2;
+  --line-strong: #cfc8b8;
+
+  --ink: #1e1c18;
+  --ink-2: #5c574d;
+  --ink-3: #8d877b;
+
+  --accent: #9e2b1f;
+  --accent-ink: #9e2b1f;
+  --accent-wash: rgba(158, 43, 31, 0.08);
+
+  --ok: #2f6b3f;
+  --warn: #9a6b12;
+  --bad: #9e2b1f;
+
+  --overlay: rgba(30, 28, 24, 0.45);
 }
 
-/* ── Reset ──────────────────────────────────────────────────────────────────── */
-
-*, *::before, *::after {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
 html, body {
   height: 100%;
   overflow: hidden;
-  background: var(--bg-primary);
-  color: var(--text-primary);
+  background: var(--paper);
+  color: var(--ink);
   font-family: var(--font-sans);
-  font-size: var(--font-size-base);
-  line-height: 1.6;
+  font-size: 14px;
+  line-height: 1.55;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
-#app {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-}
+#app { height: 100%; display: flex; flex-direction: column; }
 
-/* ── Scrollbar ──────────────────────────────────────────────────────────────── */
-
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--border-primary);
+button { font-family: inherit; }
+button:focus-visible, input:focus-visible, textarea:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
   border-radius: 4px;
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: var(--text-muted);
-}
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--line-strong); border-radius: 8px; border: 2px solid var(--paper); }
+::-webkit-scrollbar-thumb:hover { background: var(--ink-3); }
 
-/* ── Selection ──────────────────────────────────────────────────────────────── */
+::selection { background: var(--accent-wash); }
 
-::selection {
-  background: var(--accent);
-  color: white;
+.preview, .editor-scroll, .margin, .palette-list { scroll-behavior: smooth; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+  .preview, .editor-scroll, .margin, .palette-list { scroll-behavior: auto; }
 }
