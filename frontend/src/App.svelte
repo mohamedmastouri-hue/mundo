@@ -1281,8 +1281,8 @@ Begin below. Delete this page whenever you like.
 
   .editor-scroll { flex: 1; display: flex; overflow-y: auto; min-height: 0; }
   .editor {
-    flex: 1; width: 100%; max-width: 68ch; min-height: 100%; margin: 0 auto;
-    padding: 40px 32px 160px;
+    flex: 1; width: 100%; min-height: 100%;
+    padding: 40px 48px 160px;
     background: transparent; color: var(--ink);
     font-family: var(--font-mono); font-size: 14px; line-height: 1.85;
     border: none; outline: none; resize: none; tab-size: 2;
@@ -1294,8 +1294,8 @@ Begin below. Delete this page whenever you like.
   .split-pane { flex: 1; min-width: 0; }
   .split-div { width: 1px; background: var(--line); flex-shrink: 0; }
 
-  .preview { flex: 1; overflow-y: auto; padding: 48px 32px 120px; }
-  .reading { max-width: 68ch; margin: 0 auto; font-family: var(--font-serif); font-size: 17px; line-height: 1.8; }
+  .preview { flex: 1; overflow-y: auto; padding: 48px 48px 120px; }
+  .reading { font-family: var(--font-serif); font-size: 17px; line-height: 1.8; }
   .reading :global(h1), .reading :global(h2), .reading :global(h3), .reading :global(h4) {
     font-family: var(--font-serif); font-weight: 600; letter-spacing: -0.01em;
     line-height: 1.25; margin: 1.8em 0 0.6em;
