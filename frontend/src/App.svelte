@@ -1281,8 +1281,8 @@ Begin below. Delete this page whenever you like.
 
   .editor-scroll { flex: 1; display: flex; overflow-y: auto; min-height: 0; }
   .editor {
-    flex: 1; width: 100%; max-width: 68ch; min-height: 100%; margin: 0 auto;
-    padding: 40px 32px 160px;
+    flex: 1; width: 100%; min-height: 100%;
+    padding: 40px 48px 160px;
     background: transparent; color: var(--ink);
     font-family: var(--font-mono); font-size: 14px; line-height: 1.85;
     border: none; outline: none; resize: none; tab-size: 2;
