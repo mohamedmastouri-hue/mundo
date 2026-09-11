@@ -817,8 +817,7 @@ Begin below. Delete this page whenever you like.
 <!-- Top bar -->
 <header class="topbar" class:hidden={focusMode}>
   <div class="tb-left">
-    <span class="mark" title="Mundo">M</span>
-    <span class="wordmark">Mundo</span>
+    <span class="mark" title="mundo">M</span>
     <span class="fileline" title={filePath || 'Untitled document'}>
       <span class="filename">{fileName}</span>
       {#if isDirty}<span class="dot" title="Unsaved changes"></span>{/if}
@@ -1144,8 +1143,9 @@ Begin below. Delete this page whenever you like.
     font-family: var(--font-serif); font-style: italic; font-weight: 600; font-size: 14px;
     display: flex; align-items: center; justify-content: center;
     border-radius: 5px;
+    box-shadow: inset 3px 0 0 var(--accent);
+    padding-left: 3px;
   }
-  .wordmark { font-weight: 650; font-size: 14px; letter-spacing: -0.01em; }
   .fileline {
     display: inline-flex; align-items: center; gap: 7px;
     font-size: 12.5px; color: var(--ink-2);
