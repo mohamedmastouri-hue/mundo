@@ -2,7 +2,36 @@
   import { onMount } from 'svelte';
   import { Marked } from 'marked';
   import { markedHighlight } from 'marked-highlight';
-  import hljs from 'highlight.js';
+  import hljs from 'highlight.js/lib/core';
+  import typescriptLang from 'highlight.js/lib/languages/typescript';
+  import javascriptLang from 'highlight.js/lib/languages/javascript';
+  import pythonLang from 'highlight.js/lib/languages/python';
+  import bashLang from 'highlight.js/lib/languages/bash';
+  import jsonLang from 'highlight.js/lib/languages/json';
+  import yamlLang from 'highlight.js/lib/languages/yaml';
+  import markdownLang from 'highlight.js/lib/languages/markdown';
+  import cLang from 'highlight.js/lib/languages/c';
+  import cppLang from 'highlight.js/lib/languages/cpp';
+  import rustLang from 'highlight.js/lib/languages/rust';
+  import powershellLang from 'highlight.js/lib/languages/powershell';
+  import xmlLang from 'highlight.js/lib/languages/xml';
+  import diffLang from 'highlight.js/lib/languages/diff';
+
+  // Speed: register only the languages Mundo documents use instead of all 193.
+  // Unknown fences (e.g. zig) fall back to plaintext, same as before.
+  hljs.registerLanguage('typescript', typescriptLang);
+  hljs.registerLanguage('javascript', javascriptLang);
+  hljs.registerLanguage('python', pythonLang);
+  hljs.registerLanguage('bash', bashLang);
+  hljs.registerLanguage('json', jsonLang);
+  hljs.registerLanguage('yaml', yamlLang);
+  hljs.registerLanguage('markdown', markdownLang);
+  hljs.registerLanguage('c', cLang);
+  hljs.registerLanguage('cpp', cppLang);
+  hljs.registerLanguage('rust', rustLang);
+  hljs.registerLanguage('powershell', powershellLang);
+  hljs.registerLanguage('xml', xmlLang);
+  hljs.registerLanguage('diff', diffLang);
 
   // Globals injected by Zig before page loads
   // @ts-expect-error global injected by zig
