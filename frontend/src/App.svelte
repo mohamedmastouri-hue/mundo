@@ -1143,6 +1143,8 @@ Begin below. Delete this page whenever you like.
     font-family: var(--font-serif); font-style: italic; font-weight: 600; font-size: 14px;
     display: flex; align-items: center; justify-content: center;
     border-radius: 5px;
+    box-shadow: inset 3px 0 0 var(--accent);
+    padding-left: 3px;
   }
   .wordmark { font-weight: 650; font-size: 14px; letter-spacing: -0.01em; }
   .fileline {
