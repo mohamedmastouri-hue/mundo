@@ -146,8 +146,13 @@ fn writeToFile(io: std.Io, path: []const u8, data: []const u8) !void {
     });
 }
 
+/// Speed + safety: cap reads at 8MB so a stray binary or giant dump can't
+/// balloon the WebView init script / IPC JSON and freeze the app.
+/// Real notes are KBs; oversize files fail fast with StreamTooLong.
+const max_file_bytes = 8 * 1024 * 1024;
+
 fn readFromFile(io: std.Io, alloc: std.mem.Allocator, path: []const u8) ![]u8 {
-    return try std.Io.Dir.cwd().readFileAlloc(io, path, alloc, .unlimited);
+    return try std.Io.Dir.cwd().readFileAlloc(io, path, alloc, std.Io.Limit.limited(max_file_bytes));
 }
 
 const Context = struct {
