@@ -1146,7 +1146,6 @@ Begin below. Delete this page whenever you like.
     box-shadow: inset 3px 0 0 var(--accent);
     padding-left: 3px;
   }
-  .wordmark { font-weight: 650; font-size: 14px; letter-spacing: -0.01em; }
   .fileline {
     display: inline-flex; align-items: center; gap: 7px;
     font-size: 12.5px; color: var(--ink-2);
