@@ -65,11 +65,22 @@ extern "kernel32" fn GetModuleHandleW(
     lpModuleName: ?[*:0]const u16,
 ) callconv(.winapi) ?windows.HINSTANCE;
 
-fn openFileDialog(alloc: std.mem.Allocator, hwnd: ?*anyopaque) !?[]const u8 {
+extern "shell32" fn SHGetFolderPathW(
+    hwnd: ?windows.HWND,
+    csidl: c_int,
+    hToken: ?windows.HANDLE,
+    dwFlags: windows.DWORD,
+    pszPath: [*]u16,
+) callconv(.winapi) i32;
+
+fn openFileDialog(alloc: std.mem.Allocator, hwnd: ?*anyopaque, initial_dir: ?[]const u8) !?[]const u8 {
     if (builtin.os.tag != .windows) return null;
 
     var file_buf: [1024]u16 = undefined;
     @memset(&file_buf, 0);
+
+    const dir_w = if (initial_dir) |d| try std.unicode.utf8ToUtf16LeAllocZ(alloc, d) else null;
+    defer if (dir_w) |w| alloc.free(w);
 
     var ofn: OPENFILENAMEW = .{
         .hwndOwner = if (hwnd) |h| @ptrCast(@alignCast(h)) else null,
@@ -78,6 +89,7 @@ fn openFileDialog(alloc: std.mem.Allocator, hwnd: ?*anyopaque) !?[]const u8 {
         .nMaxFile = file_buf.len,
         .Flags = 0x00080000 | 0x00001000 | 0x00000800,
         .lpstrDefExt = std.unicode.utf8ToUtf16LeStringLiteral("md"),
+        .lpstrInitialDir = if (dir_w) |w| w.ptr else null,
     };
 
     if (GetOpenFileNameW(&ofn) != .FALSE) {
@@ -87,7 +99,7 @@ fn openFileDialog(alloc: std.mem.Allocator, hwnd: ?*anyopaque) !?[]const u8 {
     return null;
 }
 
-fn saveFileDialog(alloc: std.mem.Allocator, hwnd: ?*anyopaque, default_name: ?[]const u8) !?[]const u8 {
+fn saveFileDialog(alloc: std.mem.Allocator, hwnd: ?*anyopaque, default_name: ?[]const u8, initial_dir: ?[]const u8) !?[]const u8 {
     if (builtin.os.tag != .windows) return null;
 
     var file_buf: [1024]u16 = undefined;
@@ -100,6 +112,9 @@ fn saveFileDialog(alloc: std.mem.Allocator, hwnd: ?*anyopaque, default_name: ?[]
         @memcpy(file_buf[0..copy_len], wname[0..copy_len]);
     }
 
+    const dir_w = if (initial_dir) |d| try std.unicode.utf8ToUtf16LeAllocZ(alloc, d) else null;
+    defer if (dir_w) |w| alloc.free(w);
+
     var ofn: OPENFILENAMEW = .{
         .hwndOwner = if (hwnd) |h| @ptrCast(@alignCast(h)) else null,
         .lpstrFilter = filter_w,
@@ -107,6 +122,7 @@ fn saveFileDialog(alloc: std.mem.Allocator, hwnd: ?*anyopaque, default_name: ?[]
         .nMaxFile = file_buf.len,
         .Flags = 0x00080000 | 0x00000002 | 0x00000800,
         .lpstrDefExt = std.unicode.utf8ToUtf16LeStringLiteral("md"),
+        .lpstrInitialDir = if (dir_w) |w| w.ptr else null,
     };
 
     if (GetSaveFileNameW(&ofn) != .FALSE) {
@@ -127,16 +143,24 @@ fn openExternalUrl(alloc: std.mem.Allocator, hwnd: ?*anyopaque, url: []const u8)
     }
 }
 
-fn resolveMdPath(alloc: std.mem.Allocator, base_file: ?[]const u8, link: []const u8) ![]u8 {
+fn resolveMdPath(alloc: std.mem.Allocator, base_dir: []const u8, link: []const u8) ![]u8 {
     if (std.fs.path.isAbsolute(link)) {
         return try alloc.dupe(u8, link);
     }
-    if (base_file) |base| {
-        const base_dir = std.fs.path.dirname(base) orelse ".";
-        return try std.fs.path.resolve(alloc, &.{ base_dir, link });
-    } else {
-        return try std.fs.path.resolve(alloc, &.{ ".", link });
-    }
+    return try std.fs.path.resolve(alloc, &.{ base_dir, link });
+}
+
+/// Industry-standard fallback for file locations: the user's Documents
+/// folder, so untitled documents never resolve against the process
+/// working directory (which may be the Desktop or System32).
+fn getDocumentsDir(alloc: std.mem.Allocator) ![]const u8 {
+    if (builtin.os.tag != .windows) return error.Unsupported;
+    var buf: [260]u16 = undefined;
+    @memset(&buf, 0);
+    // 5 == CSIDL_PERSONAL ("Documents")
+    if (SHGetFolderPathW(null, 5, null, 0, &buf) != 0) return error.NoDocumentsDir;
+    const len = std.mem.indexOfScalar(u16, &buf, 0) orelse buf.len;
+    return try std.unicode.utf16LeToUtf8Alloc(alloc, buf[0..len]);
 }
 
 fn writeToFile(io: std.Io, path: []const u8, data: []const u8) !void {
@@ -162,13 +186,16 @@ const Context = struct {
     file_path: ?[]const u8 = null,
     filename: []const u8,
     is_dirty: bool = false,
+    /// Last folder the user opened from or saved to. Dialogs start here
+    /// (industry standard) instead of the process working directory.
+    last_dir: ?[]const u8 = null,
 
     pub fn init(w: *Webview, io: std.Io, gpa: std.mem.Allocator, initial_path: ?[]const u8, initial_filename: []const u8) !Context {
         var path_copy: ?[]const u8 = null;
         if (initial_path) |p| {
             path_copy = try gpa.dupe(u8, p);
         }
-        return .{
+        var ctx: Context = .{
             .w = w,
             .io = io,
             .gpa = gpa,
@@ -176,6 +203,8 @@ const Context = struct {
             .filename = try gpa.dupe(u8, initial_filename),
             .is_dirty = false,
         };
+        if (initial_path) |p| ctx.noteLastFile(p);
+        return ctx;
     }
 
     pub fn deinit(self: *Context) void {
@@ -183,16 +212,45 @@ const Context = struct {
             self.gpa.free(p);
             self.file_path = null;
         }
+        if (self.last_dir) |d| {
+            self.gpa.free(d);
+            self.last_dir = null;
+        }
         self.gpa.free(self.filename);
     }
 
+    fn setLastDir(self: *Context, dir: []const u8) void {
+        const owned = self.gpa.dupe(u8, dir) catch return;
+        if (self.last_dir) |old| self.gpa.free(old);
+        self.last_dir = owned;
+    }
+
+    /// Remember the folder containing `path` for future dialogs.
+    fn noteLastFile(self: *Context, path: []const u8) void {
+        if (std.fs.path.dirname(path)) |d| self.setLastDir(d);
+    }
+
+    /// Guarantee a sensible base folder: current file's folder, else the
+    /// last-used folder, else Documents. Never the working directory.
+    fn ensureLastDir(self: *Context) void {
+        if (self.file_path) |p| {
+            self.noteLastFile(p);
+            if (self.last_dir != null) return;
+        }
+        if (self.last_dir != null) return;
+        const docs = getDocumentsDir(self.gpa) catch return;
+        defer self.gpa.free(docs);
+        self.setLastDir(docs);
+    }
+
+    /// Best folder for resolving relative targets right now (owned by Context).
+    fn currentDir(self: *Context) []const u8 {
+        self.ensureLastDir();
+        return self.last_dir orelse ".";
+    }
+
     fn updateTitle(self: *Context) void {
-        const dirty_mark = if (self.is_dirty) " •" else "";
-        if (std.fmt.allocPrint(self.gpa, "Mundo — {s}{s}\x00", .{ self.filename, dirty_mark })) |title| {
-            defer self.gpa.free(title);
-            const title_z = title[0 .. title.len - 1 :0];
-            self.w.setTitle(title_z) catch {};
-        } else |_| {}
+        self.w.setTitle("mundo") catch {};
     }
 
     fn respondError(self: *Context, id: [:0]const u8, err: anyerror) !void {
@@ -249,12 +307,13 @@ const Context = struct {
 
     fn promptSaveAs(self: *Context, id: [:0]const u8, content: []const u8) !void {
         const hwnd = self.w.getWindow();
-        const chosen_path = try saveFileDialog(self.gpa, hwnd, self.filename);
+        const chosen_path = try saveFileDialog(self.gpa, hwnd, self.filename, self.currentDir());
         if (chosen_path) |new_path| {
             errdefer self.gpa.free(new_path);
             try writeToFile(self.io, new_path, content);
             if (self.file_path) |old| self.gpa.free(old);
             self.file_path = new_path;
+            self.noteLastFile(new_path);
 
             self.gpa.free(self.filename);
             self.filename = try self.gpa.dupe(u8, std.fs.path.basename(new_path));
@@ -282,7 +341,7 @@ const Context = struct {
 
     fn doOpenFile(self: *Context, id: [:0]const u8) !void {
         const hwnd = self.w.getWindow();
-        const chosen_path = try openFileDialog(self.gpa, hwnd);
+        const chosen_path = try openFileDialog(self.gpa, hwnd, self.currentDir());
         if (chosen_path) |new_path| {
             errdefer self.gpa.free(new_path);
             const content = try readFromFile(self.io, self.gpa, new_path);
@@ -290,6 +349,7 @@ const Context = struct {
 
             if (self.file_path) |old| self.gpa.free(old);
             self.file_path = new_path;
+            self.noteLastFile(new_path);
 
             self.gpa.free(self.filename);
             self.filename = try self.gpa.dupe(u8, std.fs.path.basename(new_path));
@@ -326,7 +386,7 @@ const Context = struct {
             link = link["file:///".len..];
         }
 
-        const resolved_path = try resolveMdPath(self.gpa, self.file_path, link);
+        const resolved_path = try resolveMdPath(self.gpa, self.currentDir(), link);
         errdefer self.gpa.free(resolved_path);
 
         const basename = std.fs.path.basename(resolved_path);
@@ -336,6 +396,7 @@ const Context = struct {
 
             if (self.file_path) |old| self.gpa.free(old);
             self.file_path = resolved_path;
+            self.noteLastFile(resolved_path);
 
             self.gpa.free(self.filename);
             self.filename = try self.gpa.dupe(u8, basename);
@@ -377,6 +438,7 @@ const Context = struct {
         const path_copy = try self.gpa.dupe(u8, target_path);
         if (self.file_path) |old| self.gpa.free(old);
         self.file_path = path_copy;
+        self.noteLastFile(target_path);
 
         self.gpa.free(self.filename);
         self.filename = try self.gpa.dupe(u8, std.fs.path.basename(target_path));
