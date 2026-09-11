@@ -1294,8 +1294,8 @@ Begin below. Delete this page whenever you like.
   .split-pane { flex: 1; min-width: 0; }
   .split-div { width: 1px; background: var(--line); flex-shrink: 0; }
 
-  .preview { flex: 1; overflow-y: auto; padding: 48px 32px 120px; }
-  .reading { max-width: 68ch; margin: 0 auto; font-family: var(--font-serif); font-size: 17px; line-height: 1.8; }
+  .preview { flex: 1; overflow-y: auto; padding: 48px 48px 120px; }
+  .reading { font-family: var(--font-serif); font-size: 17px; line-height: 1.8; }
   .reading :global(h1), .reading :global(h2), .reading :global(h3), .reading :global(h4) {
     font-family: var(--font-serif); font-weight: 600; letter-spacing: -0.01em;
     line-height: 1.25; margin: 1.8em 0 0.6em;
