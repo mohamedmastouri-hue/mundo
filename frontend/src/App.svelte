@@ -21,6 +21,16 @@
   import sqlLang from 'highlight.js/lib/languages/sql';
   import cssLang from 'highlight.js/lib/languages/css';
   import goLang from 'highlight.js/lib/languages/go';
+  import {
+    countLines,
+    countWords,
+    escapeHtml,
+    parseHeadings,
+    readingTimeMinutes,
+    slugify,
+    stripMarkdown,
+    type Heading
+  } from './lib/text';
 
   hljs.registerLanguage('typescript', typescriptLang);
   hljs.registerLanguage('javascript', javascriptLang);
@@ -50,15 +60,6 @@
   hljs.registerLanguage('sql', sqlLang);
   hljs.registerLanguage('css', cssLang);
   hljs.registerLanguage('go', goLang);
-
-  function escapeHtml(str: string): string {
-    return str
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&#39;');
-  }
 
   // Globals injected by Zig before page loads
   // @ts-expect-error global injected by zig
@@ -144,12 +145,7 @@ Begin below. Delete this page whenever you like.
     renderer: {
       heading({ tokens, depth }) {
         const text = this.parser.parseInline(tokens);
-        const slug = text
-          .toLowerCase()
-          .replace(/<[^>]+>/g, '')
-          .replace(/[^\w\s-]/g, '')
-          .trim()
-          .replace(/\s+/g, '-');
+        const slug = slugify(text);
         return `<h${depth} id="${slug}"><a class="anchor-link" href="#${slug}" aria-hidden="true">#</a>${text}</h${depth}>\n`;
       },
       code({ text, lang }: any) {
@@ -207,40 +203,22 @@ Begin below. Delete this page whenever you like.
   let paletteInputEl: HTMLInputElement | null = $state(null);
 
   // Throttled counts
-  let wordCount = $state(initialContent.trim() === '' ? 0 : initialContent.trim().split(/\s+/).length);
+  let wordCount = $state(countWords(initialContent));
   let charCount = $state(initialContent.length);
-  let lineCount = $state(initialContent.split('\n').length);
+  let lineCount = $state(countLines(initialContent));
   $effect(() => {
     const src = markdown;
     const t = window.setTimeout(() => {
       charCount = src.length;
-      wordCount = src.trim() === '' ? 0 : src.trim().split(/\s+/).length;
-      lineCount = src.split('\n').length;
+      wordCount = countWords(src);
+      lineCount = countLines(src);
     }, 150);
     return () => window.clearTimeout(t);
   });
 
-  let readingTime = $derived(Math.max(1, Math.ceil(wordCount / 200)));
+  let readingTime = $derived(readingTimeMinutes(wordCount));
 
-  type Heading = { depth: number; text: string; slug: string };
   let headings = $derived<Heading[]>(parseHeadings(markdown));
-
-  function parseHeadings(src: string): Heading[] {
-    const out: Heading[] = [];
-    const lines = src.split('\n');
-    let inFence = false;
-    for (const line of lines) {
-      if (/^\s*```/.test(line)) { inFence = !inFence; continue; }
-      if (inFence) continue;
-      const m = /^(#{1,4})\s+(.+?)\s*#*\s*$/.exec(line);
-      if (!m) continue;
-      const text = m[2].replace(/[*_`~\[\]()!]/g, '').trim();
-      if (!text) continue;
-      const slug = text.toLowerCase().replace(/[^\w\s-]/g, '').trim().replace(/\s+/g, '-');
-      out.push({ depth: m[1].length, text, slug });
-    }
-    return out.slice(0, 80);
-  }
 
   // Preview render (debounced, skipped in pure edit)
   let renderedHtml = $state('');
@@ -531,7 +509,7 @@ Begin below. Delete this page whenever you like.
       const idx = lines.findIndex((l) => {
         const m = /^(#{1,4})\s+(.+?)\s*#*\s*$/.exec(l);
         if (!m) return false;
-        const t = m[2].replace(/[*_`~\[\]()!]/g, '').trim().toLowerCase().replace(/[^\w\s-]/g, '').trim().replace(/\s+/g, '-');
+        const t = slugify(stripMarkdown(m[2]));
         return t === slug;
       });
       if (idx >= 0) {

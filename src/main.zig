@@ -3,6 +3,8 @@ const builtin = @import("builtin");
 const Webview = @import("webview").Webview;
 const build_options = @import("build_options");
 const installer = @import("installer.zig");
+const paths = @import("paths.zig");
+const resolveMdPath = paths.resolveMdPath;
 
 const windows = if (builtin.os.tag == .windows) std.os.windows else struct {};
 
@@ -141,13 +143,6 @@ fn openExternalUrl(alloc: std.mem.Allocator, hwnd: ?*anyopaque, url: []const u8)
         const h = if (hwnd) |handle| @as(?windows.HWND, @ptrCast(@alignCast(handle))) else null;
         _ = ShellExecuteW(h, op_w, url_w, null, null, 1);
     }
-}
-
-fn resolveMdPath(alloc: std.mem.Allocator, base_dir: []const u8, link: []const u8) ![]u8 {
-    if (std.fs.path.isAbsolute(link)) {
-        return try alloc.dupe(u8, link);
-    }
-    return try std.fs.path.resolve(alloc, &.{ base_dir, link });
 }
 
 /// Industry-standard fallback for file locations: the user's Documents

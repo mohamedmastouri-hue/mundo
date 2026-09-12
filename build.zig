@@ -98,4 +98,17 @@ pub fn build(b: *std.Build) void {
     }
     const run_step = b.step("run", "Build and run mundo");
     run_step.dependOn(&run_cmd.step);
+
+    // ── unit tests ────────────────────────────────────────────────────────────
+    const test_step = b.step("test", "Run unit tests");
+    for ([_][]const u8{ "src/installer.zig", "src/paths.zig" }) |test_file| {
+        const unit_tests = b.addTest(.{
+            .root_module = b.createModule(.{
+                .root_source_file = b.path(test_file),
+                .target = target,
+                .optimize = optimize,
+            }),
+        });
+        test_step.dependOn(&b.addRunArtifact(unit_tests).step);
+    }
 }
