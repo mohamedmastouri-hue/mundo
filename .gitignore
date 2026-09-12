@@ -5,6 +5,9 @@ zig-pkg/
 *.exe
 *.pdb
 
+# Release installer shipped in the repo (downloadable from the file listing)
+!dist/*.exe
+
 # Frontend artifacts
 frontend/node_modules/
 frontend/dist/
