@@ -507,12 +507,11 @@ pub fn main(init: std.process.Init) !void {
 
     if (builtin.os.tag == .windows) {
         if (installer.isUninstallMode(args)) {
-            try installer.runUninstall(init.io, alloc);
+            try installer.runUninstall(init.io, alloc, args);
             return;
         }
         if (installer.isSetupMode(alloc, args)) {
-            const silent = installer.isSilent(args);
-            try installer.runSetup(init.io, alloc, silent);
+            try installer.runSetup(init.io, alloc, args);
             return;
         }
     }

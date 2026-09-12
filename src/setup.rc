@@ -14,10 +14,10 @@ BEGIN
         BLOCK "040904b0"
         BEGIN
             VALUE "CompanyName", "Mundo"
-            VALUE "FileDescription", "Mundo Markdown Editor"
+            VALUE "FileDescription", "Mundo Setup"
             VALUE "FileVersion", "1.0.0"
-            VALUE "InternalName", "mundo"
-            VALUE "OriginalFilename", "mundo.exe"
+            VALUE "InternalName", "mundo-setup"
+            VALUE "OriginalFilename", "mundo-setup.exe"
             VALUE "ProductName", "Mundo Markdown Editor"
             VALUE "ProductVersion", "1.0.0"
         END

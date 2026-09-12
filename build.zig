@@ -27,6 +27,9 @@ pub fn build(b: *std.Build) void {
         }
     }
     options.addOption([:0]const u8, "html_content", html_content);
+    const setup_options = b.addOptions();
+    setup_options.addOption(bool, "dev", dev_mode);
+    setup_options.addOption([:0]const u8, "html_content", html_content);
 
     // ── executable ────────────────────────────────────────────────────────────
     const root_mod = b.createModule(.{
@@ -58,9 +61,29 @@ pub fn build(b: *std.Build) void {
     }
     b.installArtifact(exe);
 
+    const setup_mod = b.createModule(.{
+        .root_source_file = b.path("src/main.zig"),
+        .target = target,
+        .optimize = optimize,
+        .imports = &.{
+            .{ .name = "webview", .module = webview_mod },
+        },
+    });
+    setup_mod.addOptions("build_options", setup_options);
+
+    if (target.result.os.tag == .windows) {
+        setup_mod.linkSystemLibrary("comdlg32", .{});
+        setup_mod.linkSystemLibrary("shell32", .{});
+        setup_mod.linkSystemLibrary("ole32", .{});
+        setup_mod.linkSystemLibrary("advapi32", .{});
+        setup_mod.addWin32ResourceFile(.{
+            .file = b.path("src/setup.rc"),
+        });
+    }
+
     const setup_exe = b.addExecutable(.{
         .name = "mundo-setup",
-        .root_module = root_mod,
+        .root_module = setup_mod,
     });
     if (target.result.os.tag == .windows) {
         setup_exe.subsystem = .windows;
